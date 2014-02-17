@@ -14,6 +14,8 @@ import java.awt.image.BufferedImage;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
+import org.usfirst.frc2084.vision.properties.Range;
+import org.usfirst.frc2084.vision.properties.RangeProperty;
 
 /**
  *
@@ -22,6 +24,12 @@ import org.opencv.core.Size;
 public class TargetTrackingExtension extends StaticWidget {
 
     public static final String NAME = "Team 2084 Hot Target Tracker";
+
+    private static final Range COLOR_RANGE = new Range(0, 255);
+
+    public final RangeProperty hThreshold = new RangeProperty(this, "H Threshold", COLOR_RANGE);
+    public final RangeProperty sThreshold = new RangeProperty(this, "S Threshold", COLOR_RANGE);
+    public final RangeProperty vThreshold = new RangeProperty(this, "V Threshold", COLOR_RANGE);
 
     public static Size IMAGE_SIZE = new Size(800, 600);
 
@@ -108,7 +116,7 @@ public class TargetTrackingExtension extends StaticWidget {
 
         });
         TargetTrackingCommunication.setCameraEnabled(true);
-        
+
         captureThread.setIP(ipProperty.getSaveValue());
         captureThread.start();
         processingThread.start();
@@ -120,6 +128,15 @@ public class TargetTrackingExtension extends StaticWidget {
     public void propertyChanged(Property property) {
         if (property == ipProperty) {
             captureThread.setIP(ipProperty.getSaveValue());
+        } else if (property instanceof RangeProperty) {
+            Range r = ((RangeProperty) property).getValue();
+            if (property == hThreshold) {
+                processor.setHThreshold(r);
+            } else if (property == sThreshold) {
+                processor.setSThreshold(r);
+            } else if (property == vThreshold) {
+                processor.setVThreshold(r);
+            }
         }
 
     }
