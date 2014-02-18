@@ -28,7 +28,7 @@ public class TargetTrackingExtension extends StaticWidget {
     public static final String NAME = "Team 2084 Hot Target Tracker";
 
     private static final Range COLOR_RANGE = new Range(0, 255);
-    private static final Range SCORE_RANGE = new Range(0, 255);
+    private static final Range SCORE_RANGE = new Range(0, 100);
 
     public final RangeProperty hThreshold = new RangeProperty(this, "H Threshold", COLOR_RANGE, processor.getHThreshold());
     public final RangeProperty sThreshold = new RangeProperty(this, "S Threshold", COLOR_RANGE, processor.getSThreshold());
