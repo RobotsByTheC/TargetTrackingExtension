@@ -85,13 +85,31 @@ public class RangeSlider extends JSlider {
                 getMaximum(), getValueIsAdjusting());
     }
 
+    public void setRange(Range range) {
+        int upper = range.getMax();
+        int lower = range.getMin();
+        int oldValue = getValue();
+        if (oldValue == lower) {
+            return;
+        }
+
+        int newExtent = Math.min(Math.max(0, upper - lower), getMaximum() - lower);
+
+        // Set new value and extent, and fire a single change event.
+        getModel().setRangeProperties(lower, newExtent, getMinimum(),
+                getMaximum(), getValueIsAdjusting());
+    }
+    
+    public Range getRange() {
+        return new Range(getValue(), getValue() + getExtent());
+    }
+
     /**
      * Returns the upper value in the range.
      *
      * @return the upper value
      */
     public int getUpperValue() {
-        System.out.println("extent: " + getExtent());
         return getValue() + getExtent();
     }
 
@@ -104,7 +122,6 @@ public class RangeSlider extends JSlider {
         // Compute new extent.
         int lowerValue = getValue();
         int newExtent = Math.min(Math.max(0, value - lowerValue), getMaximum() - lowerValue);
-
         // Set extent to set upper value.
         setExtent(newExtent);
     }

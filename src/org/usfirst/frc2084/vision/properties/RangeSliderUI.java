@@ -1,6 +1,5 @@
 package org.usfirst.frc2084.vision.properties;
 
-import org.usfirst.frc2084.vision.properties.RangeSlider;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;

@@ -23,13 +23,17 @@ import org.usfirst.frc2084.vision.properties.RangeProperty;
  */
 public class TargetTrackingExtension extends StaticWidget {
 
+    private final TargetTrackingProcessor processor = new TargetTrackingProcessor();
+
     public static final String NAME = "Team 2084 Hot Target Tracker";
 
     private static final Range COLOR_RANGE = new Range(0, 255);
+    private static final Range SCORE_RANGE = new Range(0, 255);
 
-    public final RangeProperty hThreshold = new RangeProperty(this, "H Threshold", COLOR_RANGE);
-    public final RangeProperty sThreshold = new RangeProperty(this, "S Threshold", COLOR_RANGE);
-    public final RangeProperty vThreshold = new RangeProperty(this, "V Threshold", COLOR_RANGE);
+    public final RangeProperty hThreshold = new RangeProperty(this, "H Threshold", COLOR_RANGE, processor.getHThreshold());
+    public final RangeProperty sThreshold = new RangeProperty(this, "S Threshold", COLOR_RANGE, processor.getSThreshold());
+    public final RangeProperty vThreshold = new RangeProperty(this, "V Threshold", COLOR_RANGE, processor.getVThreshold());
+//    public final SliderProperty minRectangularityScore = new SliderProperty(this, "Min Rectangluarity", SCORE_RANGE);
 
     public static Size IMAGE_SIZE = new Size(800, 600);
 
@@ -38,8 +42,6 @@ public class TargetTrackingExtension extends StaticWidget {
     private int fpsCounter = 0;
 
     private BufferedImage imageToDraw;
-
-    private final TargetTrackingProcessor processor = new TargetTrackingProcessor();
 
     public class ProcessingThread extends Thread {
 

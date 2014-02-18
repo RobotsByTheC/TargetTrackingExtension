@@ -28,8 +28,8 @@ import org.usfirst.frc2084.vision.properties.Range;
  */
 public class TargetTrackingProcessor {
 
-    private static Scalar MIN_THRESHOLD = new Scalar(0, 0, 50);
-    private static Scalar MAX_THRESHOLD = new Scalar(255, 255, 200);
+    private static final Scalar MIN_THRESHOLD = new Scalar(0, 0, 50);
+    private static final Scalar MAX_THRESHOLD = new Scalar(255, 255, 200);
 
     private static final Scalar HOT_TARGET_COLOR = new Scalar(255, 0, 0);
     private static final Scalar STATIC_TARGET_COLOR = new Scalar(0, 255, 0);
@@ -244,12 +244,12 @@ public class TargetTrackingProcessor {
         }
         return p;
     }
-    
+
     public void setHThreshold(Range threshold) {
         MIN_THRESHOLD.val[0] = threshold.getMin();
         MAX_THRESHOLD.val[0] = threshold.getMax();
     }
-    
+
     public void setSThreshold(Range threshold) {
         MIN_THRESHOLD.val[1] = threshold.getMin();
         MAX_THRESHOLD.val[1] = threshold.getMax();
@@ -258,5 +258,17 @@ public class TargetTrackingProcessor {
     public void setVThreshold(Range threshold) {
         MIN_THRESHOLD.val[2] = threshold.getMin();
         MAX_THRESHOLD.val[2] = threshold.getMax();
+    }
+
+    public Range getHThreshold() {
+        return new Range((int) MIN_THRESHOLD.val[0], (int) MAX_THRESHOLD.val[0]);
+    }
+    
+    public Range getSThreshold() {
+        return new Range((int) MIN_THRESHOLD.val[1], (int) MAX_THRESHOLD.val[1]);
+    }
+    
+    public Range getVThreshold() {
+        return new Range((int) MIN_THRESHOLD.val[2], (int) MAX_THRESHOLD.val[2]);
     }
 }

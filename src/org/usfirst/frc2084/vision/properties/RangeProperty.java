@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.usfirst.frc2084.vision.properties;
 
 import edu.wpi.first.smartdashboard.properties.GenericProperty;
@@ -10,8 +5,6 @@ import edu.wpi.first.smartdashboard.properties.PropertyHolder;
 import java.awt.Component;
 import javax.swing.AbstractCellEditor;
 import javax.swing.JTable;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
@@ -31,16 +24,7 @@ public class RangeProperty extends GenericProperty<Range> {
         super(Range.class, holder, name, defaultValue);
         this.maxRange = range;
         slider = new RangeSlider(maxRange.getMin(), maxRange.getMax());
-        slider.addChangeListener(new ChangeListener() {
-
-            @Override
-            public void stateChanged(ChangeEvent e) {
-
-                Range r = new Range(slider.getValue(), slider.getUpperValue());
-                System.out.println("stateChanged: " + r);
-                setValue(r);
-            }
-        });
+        slider.setRange(defaultValue);
     }
 
     private final RangeSlider slider;
@@ -51,11 +35,14 @@ public class RangeProperty extends GenericProperty<Range> {
 
         @Override
         public Object getCellEditorValue() {
-            return getValue();
+            return slider.getRange();
         }
 
         @Override
         public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+            if (value instanceof Range) {
+                slider.setRange((Range) value);
+            }
             return slider;
         }
 
@@ -76,19 +63,10 @@ public class RangeProperty extends GenericProperty<Range> {
         if (value instanceof String) {
             String strVal = (String) value;
             String[] vals = strVal.split(",");
-            Range r = new Range(Integer.parseInt(vals[0]), Integer.parseInt(vals[1]));
-            System.out.println("transformValue: " + strVal);
-            return r;
+            return new Range(Integer.parseInt(vals[0]), Integer.parseInt(vals[1]));
         } else {
             return super.transformValue(value);
         }
-    }
-
-    @Override
-    protected void valueChanged() {
-        System.out.println("valueChanged: " + getValue().getMin() + "," + getValue().getMax());
-        slider.setValue(getValue().getMin());
-        slider.setUpperValue(getValue().getMax());
     }
 
 }
