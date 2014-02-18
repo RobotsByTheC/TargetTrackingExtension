@@ -16,6 +16,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.Size;
 import org.usfirst.frc2084.vision.properties.Range;
 import org.usfirst.frc2084.vision.properties.RangeProperty;
+import org.usfirst.frc2084.vision.properties.SliderProperty;
 
 /**
  *
@@ -33,7 +34,7 @@ public class TargetTrackingExtension extends StaticWidget {
     public final RangeProperty hThreshold = new RangeProperty(this, "H Threshold", COLOR_RANGE, processor.getHThreshold());
     public final RangeProperty sThreshold = new RangeProperty(this, "S Threshold", COLOR_RANGE, processor.getSThreshold());
     public final RangeProperty vThreshold = new RangeProperty(this, "V Threshold", COLOR_RANGE, processor.getVThreshold());
-//    public final SliderProperty minRectangularityScore = new SliderProperty(this, "Min Rectangluarity", SCORE_RANGE);
+    public final SliderProperty minRectangularityScore = new SliderProperty(this, "Min Rectangluarity", SCORE_RANGE);
 
     public static Size IMAGE_SIZE = new Size(800, 600);
 
