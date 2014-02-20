@@ -263,11 +263,11 @@ public class TargetTrackingProcessor {
     public Range getHThreshold() {
         return new Range((int) MIN_THRESHOLD.val[0], (int) MAX_THRESHOLD.val[0]);
     }
-    
+
     public Range getSThreshold() {
         return new Range((int) MIN_THRESHOLD.val[1], (int) MAX_THRESHOLD.val[1]);
     }
-    
+
     public Range getVThreshold() {
         return new Range((int) MIN_THRESHOLD.val[2], (int) MAX_THRESHOLD.val[2]);
     }

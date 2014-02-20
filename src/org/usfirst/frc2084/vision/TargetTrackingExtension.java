@@ -2,6 +2,7 @@ package org.usfirst.frc2084.vision;
 
 import edu.wpi.first.smartdashboard.gui.DashboardPrefs;
 import edu.wpi.first.smartdashboard.gui.StaticWidget;
+import edu.wpi.first.smartdashboard.properties.DoubleProperty;
 import edu.wpi.first.smartdashboard.properties.IPAddressProperty;
 import edu.wpi.first.smartdashboard.properties.Property;
 import java.awt.Color;
@@ -16,7 +17,6 @@ import org.opencv.core.Mat;
 import org.opencv.core.Size;
 import org.usfirst.frc2084.vision.properties.Range;
 import org.usfirst.frc2084.vision.properties.RangeProperty;
-import org.usfirst.frc2084.vision.properties.SliderProperty;
 
 /**
  *
@@ -29,12 +29,13 @@ public class TargetTrackingExtension extends StaticWidget {
     public static final String NAME = "Team 2084 Hot Target Tracker";
 
     private static final Range COLOR_RANGE = new Range(0, 255);
-    private static final Range SCORE_RANGE = new Range(0, 100);
 
     public final RangeProperty hThreshold = new RangeProperty(this, "H Threshold", COLOR_RANGE, processor.getHThreshold());
     public final RangeProperty sThreshold = new RangeProperty(this, "S Threshold", COLOR_RANGE, processor.getSThreshold());
     public final RangeProperty vThreshold = new RangeProperty(this, "V Threshold", COLOR_RANGE, processor.getVThreshold());
-    public final SliderProperty minRectangularityScore = new SliderProperty(this, "Min Rectangluarity", SCORE_RANGE);
+    public final DoubleProperty minRectangularityScore = new DoubleProperty(this, "Min Rectangluarity", Target.MIN_RECTANGULARITY_SCORE);
+    public final DoubleProperty minAspectRatioScore = new DoubleProperty(this, "Min Aspect Ratio Score", Target.MIN_ASPECT_RATIO_SCORE);
+    public final DoubleProperty minArea = new DoubleProperty(this, "Min Blob Area", Target.MIN_AREA);
 
     public static Size IMAGE_SIZE = new Size(800, 600);
 
@@ -140,8 +141,16 @@ public class TargetTrackingExtension extends StaticWidget {
             } else if (property == vThreshold) {
                 processor.setVThreshold(r);
             }
+        } else if (property instanceof DoubleProperty) {
+            double d = ((DoubleProperty) property).getValue();
+            if (property == minRectangularityScore) {
+                Target.MIN_RECTANGULARITY_SCORE = d;
+            } else if (property == minArea) {
+                Target.MIN_AREA = d;
+            } else if (property == minAspectRatioScore) {
+                Target.MIN_ASPECT_RATIO_SCORE = d;
+            }
         }
-
     }
 
     @Override
@@ -172,5 +181,4 @@ public class TargetTrackingExtension extends StaticWidget {
             g2d.drawString("NO CONNECTION", 10, 15);
         }
     }
-
 }

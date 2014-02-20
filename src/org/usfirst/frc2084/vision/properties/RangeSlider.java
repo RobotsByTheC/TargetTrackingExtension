@@ -99,7 +99,7 @@ public class RangeSlider extends JSlider {
         getModel().setRangeProperties(lower, newExtent, getMinimum(),
                 getMaximum(), getValueIsAdjusting());
     }
-    
+
     public Range getRange() {
         return new Range(getValue(), getValue() + getExtent());
     }

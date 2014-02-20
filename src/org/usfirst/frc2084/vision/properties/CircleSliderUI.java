@@ -20,7 +20,7 @@ class CircleSliderUI extends BasicSliderUI {
 
     public static final Color THUMB_OUTLINE_COLOR = Color.DARK_GRAY;
     public static final Color THUMB_FILL_COLOR = Color.GRAY;
-    
+
     /**
      * Constructs a RangeSliderUI for the specified slider component.
      *

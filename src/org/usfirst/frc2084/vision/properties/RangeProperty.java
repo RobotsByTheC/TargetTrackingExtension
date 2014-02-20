@@ -3,6 +3,8 @@ package org.usfirst.frc2084.vision.properties;
 import edu.wpi.first.smartdashboard.properties.GenericProperty;
 import edu.wpi.first.smartdashboard.properties.PropertyHolder;
 import java.awt.Component;
+import java.awt.event.MouseEvent;
+import java.util.EventObject;
 import javax.swing.AbstractCellEditor;
 import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
@@ -44,6 +46,14 @@ public class RangeProperty extends GenericProperty<Range> {
                 slider.setRange((Range) value);
             }
             return slider;
+        }
+
+        @Override
+        public boolean isCellEditable(EventObject e) {
+            if (e instanceof MouseEvent) {
+                return ((MouseEvent) e).getClickCount() >= 2;
+            }
+            return super.isCellEditable(e);
         }
 
     };

@@ -23,10 +23,10 @@ public class Target {
 
     public static final double STATIC_TARGET_ASPECT_RATIO = 4.0 / 32.0;
     public static final double HOT_TARGET_ASPECT_RATIO = 23.5 / 4.0;
-    public static final double MIN_AREA = 100;
+    public static double MIN_AREA = 100;
 
-    public static final double MIN_RECTANGULARITY_SCORE = 10;
-    public static final double MIN_ASPECT_RATIO_SCORE = 10;
+    public static double MIN_RECTANGULARITY_SCORE = 10;
+    public static double MIN_ASPECT_RATIO_SCORE = 10;
 
     private final Polygon shape;
     private final Rectangle rect;
