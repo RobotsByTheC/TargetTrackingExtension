@@ -12,7 +12,7 @@ import javax.swing.table.TableCellRenderer;
 
 /**
  *
- * @author ben
+ * @author Ben Wolsieffer
  */
 public class RangeProperty extends GenericProperty<Range> {
 

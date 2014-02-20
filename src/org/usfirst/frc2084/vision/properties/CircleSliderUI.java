@@ -13,8 +13,10 @@ import javax.swing.JSlider;
 import javax.swing.plaf.basic.BasicSliderUI;
 
 /**
- * UI delegate for the RangeSlider component. RangeSliderUI paints two thumbs,
- * one for the lower value and one for the upper value.
+ * UI delegate for a JSlider. It replaces the normal thumb with a circular gray
+ * one.
+ * 
+ * @author Ben Wolsieffer
  */
 class CircleSliderUI extends BasicSliderUI {
 

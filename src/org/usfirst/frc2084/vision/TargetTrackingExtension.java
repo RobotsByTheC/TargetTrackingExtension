@@ -19,17 +19,32 @@ import org.usfirst.frc2084.vision.properties.Range;
 import org.usfirst.frc2084.vision.properties.RangeProperty;
 
 /**
+ * Team 2084's custom vision processing SmartDashboard extension. It uses our
+ * algorithm to detect whether the target the camera is pointing at is hot and
+ * tells the robot about it. This extension requires the use of our patched
+ * SmartDashboard in order to load the native OpenCV libraries that it requires.
  *
  * @author Ben Wolsieffer
  */
 public class TargetTrackingExtension extends StaticWidget {
 
+    /**
+     * The processor is what actually implements the machine vision algorithm.
+     */
     private final TargetTrackingProcessor processor = new TargetTrackingProcessor();
 
+    /**
+     * The {@code NAME} field is used by the SmartDashboard to give the
+     * extension a name in the menus.
+     */
     public static final String NAME = "Team 2084 Hot Target Tracker";
 
+    /**
+     * The range of values (0-255) that a color property can hold.
+     */
     private static final Range COLOR_RANGE = new Range(0, 255);
 
+    // Various properties that appear in the properties editor of the extension.
     public final RangeProperty hThreshold = new RangeProperty(this, "H Threshold", COLOR_RANGE, processor.getHThreshold());
     public final RangeProperty sThreshold = new RangeProperty(this, "S Threshold", COLOR_RANGE, processor.getSThreshold());
     public final RangeProperty vThreshold = new RangeProperty(this, "V Threshold", COLOR_RANGE, processor.getVThreshold());
@@ -40,14 +55,32 @@ public class TargetTrackingExtension extends StaticWidget {
     public final DoubleProperty minTapeWidthScore = new DoubleProperty(this, "Min Tape Width Score", TargetPair.MIN_TAPE_WIDTH_SCORE);
     public final DoubleProperty minVerticalDistanceScore = new DoubleProperty(this, "Min Vertical Distance Score", TargetPair.MIN_VERTICAL_DISTANCE_SCORE);
 
+    /**
+     * The size of the image which is grabbed from the camera and operated on by
+     * the vision algorithm. This makes it easy to change the image size
+     * throughout the extension.
+     */
     public static Size IMAGE_SIZE = new Size(800, 600);
 
+    // Variables used to keep track of the FPS.
     private long lastFPSCheck = 0;
     private int lastFPS = 0;
     private int fpsCounter = 0;
 
+    /**
+     * Image used to transfer data between the processing loop and the UI
+     * drawing thread. It probably should be made more thread-safe but I haven't
+     * had a problem and it doesn't matter that much if a few frames get
+     * corrupted.
+     */
     private BufferedImage imageToDraw;
 
+    /**
+     * A separate {@link Thread} that runs the vision processing algorithm. It
+     * basically calls
+     * {@link TargetTrackingProcessor#processImage(org.opencv.core.Mat)} and
+     * monitors the FPS. I moved this out of the UI thread to keep it smooth.
+     */
     public class ProcessingThread extends Thread {
 
         boolean destroyed = false;
@@ -56,30 +89,51 @@ public class TargetTrackingExtension extends StaticWidget {
             super("Target Tracker Processing Thread");
         }
 
+        /**
+         * Thread-local copy of the image to process.
+         */
         private final Mat processingImage = new Mat(IMAGE_SIZE, CvType.CV_8UC3);
 
         @Override
-        @SuppressWarnings({"SleepWhileInLoop", "ConfusingArrayVararg", "PrimitiveArrayArgumentToVariableArgMethod"})
+        @SuppressWarnings("SleepWhileInLoop")
         public void run() {
+            // Run until the extension is removed or the SmartDashboard closes
             while (!destroyed) {
-                // If the camera is enabled
+                // If the camera is enabled, run the processing loop
                 if (TargetTrackingCommunication.isCameraEnabled()) {
                     // Start the camera if it is not running
                     captureThread.start();
 
+                    // Possibly would prevent the algorithm from running after 
+                    // the camera was enabled but before it was connected.
+//                    if (captureThread.isConnected()) {
+//                    
+                    // Copy the image from the video capture to a thread local
+                    // copy. This is to fix a bug where the image was being
+                    // overwritten by the next video frame capture before the 
+                    // algorithm completed because the video capture thread runs
+                    // much faster than this thread. It was basically resulting 
+                    // in screen tearing.
                     synchronized (image) {
                         image.copyTo(processingImage);
                     }
+                    // Process the image. The return value is what will be drawn
+                    // to the screen.
                     imageToDraw = processor.processImage(processingImage);
 
+                    // Update FPS
                     fpsCounter++;
                     if (System.currentTimeMillis() - lastFPSCheck > 500) {
                         lastFPSCheck = System.currentTimeMillis();
                         lastFPS = fpsCounter * 2;
                         fpsCounter = 0;
                     }
+                    // Draw the new image (this is thread-safe)
                     repaint();
+//                    }
                 } else {
+                    // If the camera is not enabled, stop the capture thread.
+                    // This does nothing if the camera is already disabled.
                     captureThread.stop();
                 }
                 try {
@@ -89,19 +143,41 @@ public class TargetTrackingExtension extends StaticWidget {
             }
         }
 
+        /**
+         * Sets a flag to tell the thread to stop.
+         */
         @Override
         public void destroy() {
             destroyed = true;
         }
     }
 
+    /**
+     * Image retrieved from the camera.
+     */
     private final Mat image = new Mat(IMAGE_SIZE, CvType.CV_8UC3);
 
+    /**
+     * The {@link Thread} which runs the {@link TargetTrackingProcessor}.
+     */
     private final ProcessingThread processingThread = new ProcessingThread();
+    /**
+     * The thread which captures the image from the camera.
+     */
     private final VideoCaptureThread captureThread = new VideoCaptureThread(image);
+    /**
+     * Team number.
+     */
     private final int team = DashboardPrefs.getInstance().team.getValue();
+    /**
+     * The IP address of the camera.
+     */
     public final IPAddressProperty ipProperty = new IPAddressProperty(this, "Camera IP Address", new int[]{10, (team / 100), (team % 100), 11});
 
+    /**
+     * This method is called when the SmartDashboard is started or the extension
+     * is added.
+     */
     @Override
     public void init() {
         setPreferredSize(new Dimension((int) IMAGE_SIZE.width, (int) IMAGE_SIZE.height));
@@ -123,6 +199,10 @@ public class TargetTrackingExtension extends StaticWidget {
 
         });
 
+        // Enable the camera (there are a lot of seemingly redundant 
+        // communication calls to make sure everything works in every situation).
+        // We had lots of problems where the if the robot and SmartDashboard 
+        // were started in the wrong order then the vision would not work.
         TargetTrackingCommunication.setCameraEnabled(true);
 
         // Set initial saved values for the properties
@@ -137,12 +217,19 @@ public class TargetTrackingExtension extends StaticWidget {
         TargetPair.MIN_VERTICAL_DISTANCE_SCORE = minVerticalDistanceScore.getValue();
         captureThread.setIP(ipProperty.getSaveValue());
 
+        // Start everything
         captureThread.start();
         processingThread.start();
         revalidate();
         repaint();
     }
 
+    /**
+     * Called whenever the user changes a property in the SmartDashboard menu
+     * this widget.
+     *
+     * @param property the property that changed
+     */
     @Override
     public void propertyChanged(Property property) {
         if (property == ipProperty) {
@@ -174,28 +261,43 @@ public class TargetTrackingExtension extends StaticWidget {
         }
     }
 
+    /**
+     * Called from the event thread when the SmartDashboard is started or this extension is added. It
+     * is not called when the robot disconnects and the name implies.
+     */
     @Override
     public void disconnect() {
+        // Stop all the threads
         captureThread.stop();
         processingThread.destroy();
         super.disconnect();
     }
 
+    /**
+     * Paints the image and the frame rate onto the SmartDashobard.
+     *
+     * @param g the {@link Graphics} object to paint onto
+     */
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
+        // If the capture thread is connected and there is a image to draw, draw it.
         if (captureThread.isConnected() && imageToDraw != null) {
             BufferedImage drawnImage = imageToDraw;
             int width = getBounds().width;
             int height = getBounds().height;
+            // Scale the image to fit in the component and draw it.
             double scale = Math.min((double) width / (double) image.width(), (double) height / (double) image.height());
 
             g2d.drawImage(drawnImage, (int) (width - (scale * image.width())) / 2, (int) (height - (scale * drawnImage.getHeight())) / 2,
                     (int) ((width + scale * drawnImage.getWidth()) / 2), (int) (height + scale * drawnImage.getHeight()) / 2,
                     0, 0, drawnImage.getWidth(), drawnImage.getHeight(), null);
+            // Draw the FPs indicator.
             g2d.setColor(Color.WHITE);
             g2d.drawString("FPS: " + lastFPS, 10, 15);
         } else {
+            // If the camera is not connected, make the background pink and say
+            // "NO CONNECTION"
             g2d.setColor(Color.PINK);
             g2d.fillRect(0, 0, getBounds().width, getBounds().height);
             g2d.setColor(Color.BLACK);

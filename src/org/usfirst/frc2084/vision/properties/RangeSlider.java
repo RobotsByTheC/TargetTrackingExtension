@@ -11,6 +11,9 @@ import javax.swing.JSlider;
  * Note that RangeSlider makes use of the default BoundedRangeModel, which
  * supports an inner range defined by a value and an extent. The upper value
  * returned by RangeSlider is simply the lower value plus the extent.</p>
+ * 
+ * @author The internet
+ * @author Ben Wolsieffer
  */
 public class RangeSlider extends JSlider {
 
@@ -89,10 +92,9 @@ public class RangeSlider extends JSlider {
         int upper = range.getMax();
         int lower = range.getMin();
         int oldValue = getValue();
-        
+
         int newExtent = Math.min(Math.max(0, upper - lower), getMaximum() - lower);
-        
-        
+
         if (oldValue == lower && newExtent == getExtent()) {
             return;
         }
