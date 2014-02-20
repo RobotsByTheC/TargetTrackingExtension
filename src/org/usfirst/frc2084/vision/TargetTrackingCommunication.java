@@ -3,6 +3,9 @@ package org.usfirst.frc2084.vision;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 
 /**
+ * This class is what communicates with the robot using NetworkTables. It is
+ * duplicated almost identically no the robot side. Both sides call it a lot to
+ * make sure all the field are always in the right state.
  *
  * @author Ben Wolsieffer
  */
@@ -21,9 +24,13 @@ public class TargetTrackingCommunication {
 
     public static void init() {
         setState(State.UNKNOWN);
-
     }
 
+    /**
+     * A fake enum to store the state of the target. I didn't use a real enum
+     * because it isn't supported in Java ME on the robot side and Java doesn't
+     * support custom enum ordinals like C++;
+     */
     public static class State {
 
         public static final int HOT_VALUE = 1;

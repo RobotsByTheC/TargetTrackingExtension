@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.usfirst.frc2084.vision.properties;
 
 import edu.wpi.first.smartdashboard.properties.IntegerProperty;
@@ -15,16 +10,14 @@ import javax.swing.table.TableCellEditor;
 
 /**
  *
- * @author ben
+ * @author Ben Wolsieffer
  */
 public class SliderProperty extends IntegerProperty {
 
-    private final Range range;
     private final JSlider slider;
 
     public SliderProperty(PropertyHolder element, String name, Range range, int defaultValue) {
         super(element, name, defaultValue);
-        this.range = range;
         slider = new JSlider(range.getMin(), range.getMax());
         slider.setUI(new CircleSliderUI(slider));
     }
@@ -32,7 +25,6 @@ public class SliderProperty extends IntegerProperty {
     public SliderProperty(PropertyHolder element, String name, Range range) {
         this(element, name, range, 0);
     }
-
 
     private final SliderEditor editor = new SliderEditor();
 
