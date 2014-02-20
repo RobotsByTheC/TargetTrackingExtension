@@ -26,7 +26,6 @@ public class RangeProperty extends GenericProperty<Range> {
         super(Range.class, holder, name, defaultValue);
         this.maxRange = range;
         slider = new RangeSlider(maxRange.getMin(), maxRange.getMax());
-        slider.setRange(defaultValue);
     }
 
     private final RangeSlider slider;

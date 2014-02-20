@@ -33,9 +33,12 @@ public class TargetTrackingExtension extends StaticWidget {
     public final RangeProperty hThreshold = new RangeProperty(this, "H Threshold", COLOR_RANGE, processor.getHThreshold());
     public final RangeProperty sThreshold = new RangeProperty(this, "S Threshold", COLOR_RANGE, processor.getSThreshold());
     public final RangeProperty vThreshold = new RangeProperty(this, "V Threshold", COLOR_RANGE, processor.getVThreshold());
+    public final DoubleProperty minArea = new DoubleProperty(this, "Min Blob Area", Target.MIN_AREA);
     public final DoubleProperty minRectangularityScore = new DoubleProperty(this, "Min Rectangluarity", Target.MIN_RECTANGULARITY_SCORE);
     public final DoubleProperty minAspectRatioScore = new DoubleProperty(this, "Min Aspect Ratio Score", Target.MIN_ASPECT_RATIO_SCORE);
-    public final DoubleProperty minArea = new DoubleProperty(this, "Min Blob Area", Target.MIN_AREA);
+    public final DoubleProperty minHorizontalDistanceScore = new DoubleProperty(this, "Min Horizontal Distance Score", TargetPair.MIN_HORIZONTAL_DISTANCE_SCORE);
+    public final DoubleProperty minTapeWidthScore = new DoubleProperty(this, "Min Tape Width Score", TargetPair.MIN_TAPE_WIDTH_SCORE);
+    public final DoubleProperty minVerticalDistanceScore = new DoubleProperty(this, "Min Vertical Distance Score", TargetPair.MIN_VERTICAL_DISTANCE_SCORE);
 
     public static Size IMAGE_SIZE = new Size(800, 600);
 
@@ -119,9 +122,21 @@ public class TargetTrackingExtension extends StaticWidget {
             }
 
         });
+
         TargetTrackingCommunication.setCameraEnabled(true);
 
+        // Set initial saved values for the properties
+        processor.setHThreshold(hThreshold.getValue());
+        processor.setSThreshold(sThreshold.getValue());
+        processor.setVThreshold(vThreshold.getValue());
+        Target.MIN_RECTANGULARITY_SCORE = minRectangularityScore.getValue();
+        Target.MIN_AREA = minArea.getValue();
+        Target.MIN_ASPECT_RATIO_SCORE = minAspectRatioScore.getValue();
+        TargetPair.MIN_HORIZONTAL_DISTANCE_SCORE = minHorizontalDistanceScore.getValue();
+        TargetPair.MIN_TAPE_WIDTH_SCORE = minTapeWidthScore.getValue();
+        TargetPair.MIN_VERTICAL_DISTANCE_SCORE = minVerticalDistanceScore.getValue();
         captureThread.setIP(ipProperty.getSaveValue());
+
         captureThread.start();
         processingThread.start();
         revalidate();
@@ -149,6 +164,12 @@ public class TargetTrackingExtension extends StaticWidget {
                 Target.MIN_AREA = d;
             } else if (property == minAspectRatioScore) {
                 Target.MIN_ASPECT_RATIO_SCORE = d;
+            } else if (property == minHorizontalDistanceScore) {
+                TargetPair.MIN_HORIZONTAL_DISTANCE_SCORE = d;
+            } else if (property == minTapeWidthScore) {
+                TargetPair.MIN_TAPE_WIDTH_SCORE = d;
+            } else if (property == minVerticalDistanceScore) {
+                TargetPair.MIN_VERTICAL_DISTANCE_SCORE = d;
             }
         }
     }

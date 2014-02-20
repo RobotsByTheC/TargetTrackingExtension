@@ -11,9 +11,9 @@ public class TargetPair {
 
     private static final double HORIZONTAL_DISTANCE_RATIO = 1.2;
 
-    private static final double MIN_HORIZONTAL_DISTANCE_SCORE = 20;
-    private static final double MIN_TAPE_WIDTH_SCORE = 20;
-    private static final double MIN_VERTICAL_DISTANCE_SCORE = 0;
+    public static double MIN_HORIZONTAL_DISTANCE_SCORE = 20;
+    public static double MIN_TAPE_WIDTH_SCORE = 20;
+    public static double MIN_VERTICAL_DISTANCE_SCORE = 0;
 
     private final Target staticTarget;
     private Target hotTarget;

@@ -89,11 +89,13 @@ public class RangeSlider extends JSlider {
         int upper = range.getMax();
         int lower = range.getMin();
         int oldValue = getValue();
-        if (oldValue == lower) {
+        
+        int newExtent = Math.min(Math.max(0, upper - lower), getMaximum() - lower);
+        
+        
+        if (oldValue == lower && newExtent == getExtent()) {
             return;
         }
-
-        int newExtent = Math.min(Math.max(0, upper - lower), getMaximum() - lower);
 
         // Set new value and extent, and fire a single change event.
         getModel().setRangeProperties(lower, newExtent, getMinimum(),
