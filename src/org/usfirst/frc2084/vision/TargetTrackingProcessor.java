@@ -39,9 +39,9 @@ public class TargetTrackingProcessor {
      * The minimum number of frames the algorithm must process in order to
      * determine the state of the target.
      */
-    private static final int MIN_FRAMES = 10;
-    private static final double MIN_HOT_FRAME_RATIO = 0.7;
-    private static final double MAX_HOT_FRAME_RATIO = 0.3;
+    private static final int MIN_FRAMES = 5;
+    private static final double MIN_HOT_FRAME_RATIO = 0.6;
+    private static final double MAX_HOT_FRAME_RATIO = 0.4;
 
     /**
      * The number of frames where a hot goal was found since the match started.
