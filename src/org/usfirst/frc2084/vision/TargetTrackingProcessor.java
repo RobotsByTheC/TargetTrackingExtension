@@ -39,10 +39,10 @@ public class TargetTrackingProcessor {
      * The minimum number of frames the algorithm must process in order to
      * determine the state of the target.
      */
-    private static final int MIN_FRAMES = 4;
+    private static final int MIN_FRAMES = 3;
     private static final double MIN_HOT_FRAME_RATIO = 0.6;
     private static final double MAX_HOT_FRAME_RATIO = 0.4;
-    private static final long AUTONOMOUS_START_WAIT = 100;
+    private static final long AUTONOMOUS_START_WAIT = 50;
     /**
      * The number of frames where a hot goal was found since the match started.
      */
@@ -70,7 +70,10 @@ public class TargetTrackingProcessor {
             }
             if (System.currentTimeMillis() - autonomousStartTime < AUTONOMOUS_START_WAIT){
                 autonomousRunning = false;
+                System.out.println("Waiting...");
             }
+        } else {
+            autonomousStartTime = -1;
         }
 
         // Convert the image to HSV, threshold it and find contours
