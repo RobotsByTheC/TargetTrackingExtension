@@ -39,7 +39,7 @@ public class TargetTrackingProcessor {
      * The minimum number of frames the algorithm must process in order to
      * determine the state of the target.
      */
-    private static final int MIN_FRAMES = 3;
+    private static final int MIN_FRAMES = 5;
     private static final double MIN_HOT_FRAME_RATIO = 0.6;
     private static final double MAX_HOT_FRAME_RATIO = 0.4;
     private static final long AUTONOMOUS_START_WAIT = 50;
@@ -64,17 +64,17 @@ public class TargetTrackingProcessor {
     public BufferedImage processImage(Mat image) {
 
         boolean autonomousRunning = TargetTrackingCommunication.isAutonomousVisionRunning();
-        if (autonomousRunning) {
-            if (autonomousStartTime == -1) {
-                autonomousStartTime = System.currentTimeMillis();
-            }
-            if (System.currentTimeMillis() - autonomousStartTime < AUTONOMOUS_START_WAIT){
-                autonomousRunning = false;
-                System.out.println("Waiting...");
-            }
-        } else {
-            autonomousStartTime = -1;
-        }
+//        if (autonomousRunning) {
+//            if (autonomousStartTime == -1) {
+//                autonomousStartTime = System.currentTimeMillis();
+//            }
+//            if (System.currentTimeMillis() - autonomousStartTime < AUTONOMOUS_START_WAIT){
+//                autonomousRunning = false;
+//                System.out.println("Waiting...");
+//            }
+//        } else {
+//            autonomousStartTime = -1;
+//        }
 
         // Convert the image to HSV, threshold it and find contours
         List<MatOfPoint> contours = findContours(threshold(convertToHsv(image)));
