@@ -52,6 +52,7 @@ public class Slider extends AbstractValueWidget {
         update(tickInterval, tickInterval.getValue());
         update(showTicks, showTicks.getValue());
         update(orientation, orientation.getValue());
+        update(editable, editable.getValue());
 
         setLayout(new BorderLayout());
         add(label = new JLabel(getFieldName()), BorderLayout.PAGE_START);

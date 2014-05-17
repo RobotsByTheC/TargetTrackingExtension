@@ -11,6 +11,9 @@ import edu.wpi.first.smartdashboard.gui.StaticWidget;
 import edu.wpi.first.smartdashboard.properties.DoubleProperty;
 import edu.wpi.first.smartdashboard.properties.IPAddressProperty;
 import edu.wpi.first.smartdashboard.properties.Property;
+import edu.wpi.first.smartdashboard.robot.Robot;
+import edu.wpi.first.wpilibj.tables.IRemote;
+import edu.wpi.first.wpilibj.tables.IRemoteConnectionListener;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -33,6 +36,8 @@ import org.usfirst.frc2084.vision.properties.RangeProperty;
  * @author Ben Wolsieffer
  */
 public class TargetTrackingExtension extends StaticWidget {
+
+    private boolean connectedToRobot = false;
 
     /**
      * The processor is what actually implements the machine vision algorithm.
@@ -105,15 +110,12 @@ public class TargetTrackingExtension extends StaticWidget {
         public void run() {
             // Run until the extension is removed or the SmartDashboard closes
             while (!destroyed) {
-                // If the camera is enabled, run the processing loop
-                if (TargetTrackingCommunication.isCameraEnabled()) {
+                // If the camera is enabled and we are conected to the robot, 
+                // run the processing loop
+                if (TargetTrackingCommunication.isCameraEnabled() && connectedToRobot) {
                     // Start the camera if it is not running
                     captureThread.start();
-
-                    // Possibly would prevent the algorithm from running after 
-                    // the camera was enabled but before it was connected.
-//                    if (captureThread.isConnected()) {
-//                    
+                
                     // Copy the image from the video capture to a thread local
                     // copy. This is to fix a bug where the image was being
                     // overwritten by the next video frame capture before the 
@@ -136,11 +138,15 @@ public class TargetTrackingExtension extends StaticWidget {
                     }
                     // Draw the new image (this is thread-safe)
                     repaint();
-//                    }
+
                 } else {
                     // If the camera is not enabled, stop the capture thread.
                     // This does nothing if the camera is already disabled.
                     captureThread.stop();
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException ex) {
+                    }
                 }
                 try {
                     Thread.sleep(1);
@@ -205,6 +211,19 @@ public class TargetTrackingExtension extends StaticWidget {
             }
 
         });
+
+        Robot.addConnectionListener(new IRemoteConnectionListener() {
+
+            @Override
+            public void connected(IRemote remote) {
+                connectedToRobot = true;
+            }
+
+            @Override
+            public void disconnected(IRemote remote) {
+                connectedToRobot = false;
+            }
+        }, true);
 
         // Enable the camera (there are a lot of seemingly redundant 
         // communication calls to make sure everything works in every situation).

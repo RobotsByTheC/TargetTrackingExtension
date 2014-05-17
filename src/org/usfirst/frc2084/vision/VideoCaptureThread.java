@@ -70,7 +70,7 @@ public class VideoCaptureThread {
                         // prevent data corruption by the processing thread.
                         synchronized (image) {
                             if (!vcap.read(image)) {
-                                // If the read fails (in thoery when the camera 
+                                // If the read fails (in theory when the camera 
                                 // is disconnected), close the video capture. In
                                 // reality vcap.read() just blocks when the
                                 // camera is disconnected.
@@ -114,19 +114,19 @@ public class VideoCaptureThread {
      */
     public void start() {
         if (!running) {
-            if (captureThread.getState() != Thread.State.NEW) {
-                captureThread = new CaptureThread();
-            }
             running = true;
-            captureThread.start();
+            if (captureThread.getState() == Thread.State.TERMINATED) {
+                captureThread = new CaptureThread();
+                captureThread.start();
+            }
         }
     }
 
     /**
      * Stops the capture thread by calling {@link Thread#stop()} on it. This
      * should only be used if the thread needs to be stopped after the camera
-     * was disconnected. When {@link VideoCapture} loses connection, reads block
-     * until it is reconnected.
+     * was disconnected. When {@link VideoCapture} loses connection, reads
+     * blocks until it is reconnected.
      */
     @SuppressWarnings("CallToThreadStopSuspendOrResumeManager")
     public void stopHard() {
