@@ -30,13 +30,11 @@ public class BindableSlider extends JSlider implements NumberBindable, Component
 
     @Override
     public void setBindableValue(double value) {
-        System.out.println("NumberSlider.setBindableValue(" + value + ")");
         this.value = value;
         setUnscaledValue(value);
     }
 
     private void setUnscaledValue(double value) {
-        System.out.println("NumberSlider.setUnscaledValue");
         if (value < min) {
             value = min;
         }
@@ -82,7 +80,6 @@ public class BindableSlider extends JSlider implements NumberBindable, Component
     }
 
     private void calcBounds() {
-        System.out.println("NumberSlider.calcBounds");
         pixelWidth = getWidth();
         setMinimum(0);
         setMaximum(pixelWidth);

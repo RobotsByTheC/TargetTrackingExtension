@@ -78,7 +78,6 @@ public class Slider extends AbstractValueWidget {
             label.setVisible(showLabel.getValue());
         } else if (property == orientation) {
             slider.setOrientation((int) orientation.getValue());
-            System.out.println("Orientation");
         } else if (property == editable) {
             slider.setEnabled(editable.getValue());
         }
