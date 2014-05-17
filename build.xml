@@ -74,9 +74,8 @@
     <target name="-post-jar">
         <copy file="${dist.jar}" todir="../SmartDashboard/smartdashboard/dist/extensions"/>
         <copy file="${dist.jar}" todir="../SmartDashboard/smartdashboard/extensions"/>
-    </target>
-    
-    <target name="run" depends="jar">
-        <java dir="../SmartDashboard/smartdashboard/dist" jar="../SmartDashboard/smartdashboard/dist/SmartDashboard.jar"/>
+        <copy todir="../SmartDashboard/smartdashboard/dist/extensions/lib">
+            <fileset dir="lib"/>
+        </copy>
     </target>
 </project>

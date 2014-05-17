@@ -1,3 +1,9 @@
+/* 
+ * Copyright (c) 2014 RobotsByTheC. All rights reserved.
+ *
+ * Open Source Software - may be modified and shared by FRC teams. The code must
+ * be accompanied by the BSD license file in the root directory of the project.
+ */
 package org.usfirst.frc2084.vision;
 
 import edu.wpi.first.smartdashboard.gui.DashboardPrefs;
@@ -60,7 +66,7 @@ public class TargetTrackingExtension extends StaticWidget {
      * the vision algorithm. This makes it easy to change the image size
      * throughout the extension.
      */
-    public static Size IMAGE_SIZE = new Size(800, 600);
+    public final static Size IMAGE_SIZE = new Size(800, 600);
 
     // Variables used to keep track of the FPS.
     private long lastFPSCheck = 0;
@@ -180,6 +186,7 @@ public class TargetTrackingExtension extends StaticWidget {
      */
     @Override
     public void init() {
+
         setPreferredSize(new Dimension((int) IMAGE_SIZE.width, (int) IMAGE_SIZE.height));
         addComponentListener(new ComponentAdapter() {
 
@@ -262,8 +269,9 @@ public class TargetTrackingExtension extends StaticWidget {
     }
 
     /**
-     * Called from the event thread when the SmartDashboard is started or this extension is added. It
-     * is not called when the robot disconnects and the name implies.
+     * Called from the event thread when the SmartDashboard is started or this
+     * extension is added. It is not called when the robot disconnects as the
+     * name implies.
      */
     @Override
     public void disconnect() {

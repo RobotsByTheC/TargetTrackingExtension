@@ -1,3 +1,9 @@
+/* 
+ * Copyright (c) 2014 RobotsByTheC. All rights reserved.
+ *
+ * Open Source Software - may be modified and shared by FRC teams. The code must
+ * be accompanied by the BSD license file in the root directory of the project.
+ */
 package org.usfirst.frc2084.vision;
 
 import java.awt.Polygon;
@@ -39,10 +45,9 @@ public class TargetTrackingProcessor {
      * The minimum number of frames the algorithm must process in order to
      * determine the state of the target.
      */
-    private static final int MIN_FRAMES = 5;
-    private static final double MIN_HOT_FRAME_RATIO = 0.6;
-    private static final double MAX_HOT_FRAME_RATIO = 0.4;
-    private static final long AUTONOMOUS_START_WAIT = 50;
+    private static final int MIN_FRAMES = 10;
+    private static final double MIN_HOT_FRAME_RATIO = 0.9;
+    private static final double MAX_HOT_FRAME_RATIO = 0.7;
     /**
      * The number of frames where a hot goal was found since the match started.
      */
@@ -83,9 +88,8 @@ public class TargetTrackingProcessor {
         ArrayList<Target> possibleTargets = new ArrayList<>();
 
         // Convert the contours to Targets
-        for (MatOfPoint contour : contours) {
-            possibleTargets.add(new Target(convexHull(contour)));
-        }
+        contours.stream().forEach((contour)
+                -> possibleTargets.add(new Target(convexHull(contour))));
 
         // Object to store the static target in
         Target staticTarget = null;
